@@ -1,0 +1,19 @@
+{
+  "name": "work-1",
+  "version": "1.0.0",
+  "description": "learning how backend code is written",
+  "keywords": [
+    "backend",
+    "javascript"
+  ],
+  "license": "ISC",
+  "author": "devesh gupta",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon src/index.js"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.11"
+  }
+}
