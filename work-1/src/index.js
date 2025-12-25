@@ -1,3 +1,5 @@
+import { app  } from "./app.js";
+
 console.log("ENV CHECK:", process.env.MONGODB_URL);
 
 
