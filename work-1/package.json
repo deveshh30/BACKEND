@@ -1,13 +1,13 @@
 {
   "name": "js-backen",
+  "type": "module",
   "version": "1.0.0",
   "description": "",
   "license": "ISC",
   "author": "devesh",
-  "type": "commonjs",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js"
+    "dev" : "nodemon src/index.js",
   },
   "keywords": [
     "node",
@@ -17,5 +17,8 @@
   "dependencies": {
     "dotenv": "^17.2.3",
     "express": "^5.2.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.11"
   }
 }
