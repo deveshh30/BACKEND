@@ -1,31 +1,21 @@
 {
-  "name": "work-1",
+  "name": "js-backen",
   "version": "1.0.0",
-  "description": "learning how backend code is written",
-  "keywords": [
-    "backend",
-    "javascript"
-  ],
+  "description": "",
   "license": "ISC",
-  "author": "devesh gupta",
-  "type": "module",
+  "author": "devesh",
+  "type": "commonjs",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon -r dotenv/config src/utils/index.js"
+    "start": "node index.js"
   },
-  "devDependencies": {
-    "nodemon": "^3.1.11"
-  },
+  "keywords": [
+    "node",
+    "javascript",
+    "backend"
+  ],
   "dependencies": {
-    "bcrypt": "^6.0.0",
-    "cloudinary": "^2.8.0",
-    "cookie-parser": "^1.4.7",
-    "cors": "^2.8.5",
     "dotenv": "^17.2.3",
-    "express": "^5.2.1",
-    "jsonwebtoken": "^9.0.3",
-    "mongoose": "^9.0.2",
-    "mongoose-aggregate-paginate-v2": "^1.1.4",
-    "multer": "^2.0.2"
+    "express": "^5.2.1"
   }
 }
