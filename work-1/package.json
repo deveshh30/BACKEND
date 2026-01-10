@@ -7,8 +7,8 @@
   "author": "devesh",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon src/index.js",
-    "start": "node src/index.js"
+    "dev": "nodemon src/main_file.js",
+    "start": "node src/main_file.js"
   },
   "keywords": [
     "node",
