@@ -1,19 +1,21 @@
-/* 
-    user model schema
+import mongoose, { mongo } from "mongoose";
 
-    FIELDS : 
-    nname - string
-    email - string
-    age - num
-    createdAt - date()
+const userSchema = new mongoose.Schema (
+    {
+    name: {
+      type: String,
+    },
+    email: {
+      type: String,
+      unique: true
+    },
+    age: {
+      type: Number,
+      min: 0
+    },
+    } , {timestamps : true}
+);
 
-    email {
-        should be unique 
-        lowercase
-    }
+const User = mongoose.model("User", userSchema);
 
-    age {
-        age > 7
-    }
-
-*/ 
+export default User ;

@@ -1,15 +1,14 @@
 import mongoose, { connect } from 'mongoose';
 
-const connect_DB = async () => {
+const connectDB = async () => {
     try {
-        await mongoose.connect("");
+        await mongoose.connect("mongodb://127.0.0.1:27017/miniapiDB");
         console.log("your database is connected DEVESH GUPTA");
     } catch (error) {
         console.log("your database connection failed DEVESH GUPTA");
         process.exit(1);
     }
     
-    
 }
 
-export default connect_DB
+export default connectDB
