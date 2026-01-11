@@ -35,6 +35,11 @@ app.delete("/items/:id" , (req,res)=>{
 
      if (index === -1) {
     return res.status(404).json({ error: "Item not found" });
+
+    const deletedItem = items.splice(index, 1);
+
+  res.json(deletedItem[0]);
+
   }
 })
 
