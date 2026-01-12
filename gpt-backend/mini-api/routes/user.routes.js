@@ -27,6 +27,7 @@ router.post("/", async(req,res) => {
     }
 });
 
+
 router.get("/", async (req, res) => {
   try {
     const users = await User.find();
@@ -42,6 +43,11 @@ router.get("/", async (req, res) => {
     });
   }
 });
+
+router.get("/:id", getUserById);
+router.put("/:id", updateUser);
+
+
 
 
 export default router;
