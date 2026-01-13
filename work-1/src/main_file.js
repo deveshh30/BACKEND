@@ -1,59 +1,49 @@
-// // require('dotenv').config({path: "./env"}) 
-// // this line start all env variable as soon as file opens
-
 import express from "express";
 import dotenv from "dotenv";
 import connectDB from "./db/index.js";
+import userRouter from "./routes/user.router.js";
 
 dotenv.config();
 
 const app = express();
 
-await connectDB()
+/* ---------------- MIDDLEWARES ---------------- */
 
+// parse JSON bodies
+app.use(express.json());
 
-// .catch((error)=> {
-//   console.log("monngo db connection fail", error);
-  
-// })
-// .then(()=>{
-//   app.listen(process.env.PORT, ()=> {
-//     console.log(`server is running devesh at port : ${process.env.PORT}`);
-    
-//   })
-// })
+// parse form data (needed for multer text fields)
+app.use(express.urlencoded({ extended: true }));
 
-// app.get("/", (req, res) => {
-//   res.send("Server running");
-// });
+// request logger (DEBUGGING — DO NOT REMOVE)
+app.use((req, res, next) => {
+  console.log("HIT:", req.method, req.url);
+  next();
+});
 
-// app.listen(process.env.PORT || 3000, () => {
-//   console.log(`Server listening on port ${process.env.PORT || 3000}`);
-// });
+/* ---------------- ROUTES ---------------- */
 
-dotenv.config({
-    path: './env'
-})
+app.use("/users", userRouter);
 
+// test route (sanity check)
+app.get("/", (req, res) => {
+  res.send("Server running");
+});
 
-// // ( async () => {
-// //     try {
-// //         await mongoose.connect(`${process.env.MONGODB_URL}/${DB_NAME}`)
-// //         app.on("error", (error) => {
-// //             console.log("ERROR", error);
-// //             throw error
-            
-// //         })
+/* ---------------- SERVER + DB ---------------- */
 
-// //         app.listen(process.env.PORT , () => {
-// //             console.log(`app is listening on port ${process.env.PORT}`);
-            
-// //         })
-// //     } catch (error) {
-// //         console.error("ERROR", error)
-// //         throw error
-// //     }
-// // })()
+const PORT = process.env.PORT || 4000;
 
+const startServer = async () => {
+  try {
+    await connectDB();
+    app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
+    });
+  } catch (error) {
+    console.error("Failed to start server:", error);
+    process.exit(1);
+  }
+};
 
-
+startServer();
