@@ -5,7 +5,6 @@ import { uploadCloudinary } from "../utils/cloudinary.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 
 const registerUser = async (req, res) => {
-  
     
     
     const { fullName, password, userName, email } = req.body;
@@ -71,6 +70,5 @@ const registerUser = async (req, res) => {
   )
    
 }
-
 
 export { registerUser }
