@@ -2,32 +2,29 @@ import mongoose, { SchemaType, SchemaTypeOptions } from "mongoose";
 import { Schema } from "mongoose";
 import mongooseAggregatePaginate from "mongoose-aggregate-paginate-v2";
 import bcrypt from "bcryptjs";
-import { JsonWebTokenError } from "jsonwebtoken";
-import { User } from "./user.models";
 import jwt from "jsonwebtoken";
 
 const userSchema = new Schema(
     {
         userName : {
             type : String,
-            require : true,
+            required : true,
             unique : true,
-            lowecase : true,
+            lowercase : true,
             trim : true,
             index : true,
         },
 
         email : {
             type : String,
-            require: true,
+            required: true,
             unique : true,
-            specialcharcater : true,
-            lowecase : true,
+            lowercase : true,
             trim : true,
         },
         fullName : {
             type : String,
-            require : false,
+            required : false,
             unique : false,
             trim : true,
             index : true,
@@ -35,25 +32,25 @@ const userSchema = new Schema(
         },
         password:{
             type : String,
-            require : true,
+            required : true,
             unique : true
 
         },
         avatar : {
             type : String,
-            require : true,
+            required : true,
 
         },
         coverImage : {
-            type : string,
+            type : String,
 
         },
         watchHistory : {
             type : Schema.Types.ObjectId,
-            reference : "video",
+            ref : "video",
         },
         refreshToken : {
-            type : string,
+            type : String,
         }
     },
     {

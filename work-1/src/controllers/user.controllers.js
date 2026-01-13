@@ -5,7 +5,7 @@ import { uploadCloudinary } from "../utils/cloudinary.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 
 const registerUser = async (req, res) => {
-  try {
+  
     
     
     const { fullName, password, userName, email } = req.body;
@@ -21,12 +21,13 @@ const registerUser = async (req, res) => {
     
 
       if (
-        [fullName, email, userName, password].some((field)=> field?.trim() === "" ).  // return boolean value
-      ) {
-        throw new ApiError(400, "all fields are required")
-      }
+        [fullName, email, userName, password].some((field)=> field?.trim() === "" )) {
+          throw new ApiError(400, "all fields are required")
+        } // return boolean value
+       
+        
 
-      const existed_User = User.findOne({
+      const existed_User = await User.findOne({
         $or : [{ email } , { userName }]
       })
 
@@ -41,8 +42,8 @@ const registerUser = async (req, res) => {
         throw new ApiError(400, "avatar file is missing")
       }
 
-      await avatar = uploadCloudinary(avatarLocalPath)
-      await coverImage = uploadCloudinary(coverImageLocalPath)
+      const avatar = await uploadCloudinary(avatarLocalPath)
+      const coverImage = await uploadCloudinary(coverImageLocalPath)
       
       if(!avatar) {
         throw new ApiError(400, "avatar file is missing")
@@ -65,10 +66,11 @@ const registerUser = async (req, res) => {
       if(!createdUser) {
         throw new ApiError(500, "somthing went wronng while registering the user")
       }
-      return res.status(201).json( 
-        new ApiResponse(200, createdUser, "user Registered Successfully")
-      )
-  }
-};
+      return res.status(201).json(
+    new ApiResponse(200, createdUser, "User registered successfully")
+  )
+   
+}
 
-export { registerUser };
+
+export { registerUser }

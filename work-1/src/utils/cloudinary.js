@@ -28,12 +28,7 @@ const uploadCloudinary = async (localFilePath) => {
     }
 }
 
-cloudinary.v2.uploader.upload("https://upload.wikimedia.org/wikipedia/commons/0/01/Charvet_shirt.jpg", { 
-  public_id: "wiki_shirt",
-  auto_tagging: 0.8},
-  function(error,result) {console.log(result);
-  }
-);
+
 
 // .then(result=>console.log(result))
 
