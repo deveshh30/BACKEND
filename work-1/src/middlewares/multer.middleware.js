@@ -1,40 +1,38 @@
 import multer from "multer";
-import path from "path";
 import fs from "fs";
+import path from "path";
 
-const tempFolder = './public/temp';
-if (!fs.existsSync(tempFolder)) {
-    fs.mkdirSync(tempFolder, { recursive: true });
+const uploadDir = "./public/temp";
+
+// create folder if not exists
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true });
 }
 
-// MULTER STORAGE CONFIGURATION
 const storage = multer.diskStorage({
-    // Where to store the uploaded files temporarily
-    destination: function (req, file, cb) {
-        cb(null, tempFolder); // temp folder
-    },
-    // How to name the uploaded files
-    filename: function (req, file, cb) {
-        const ext = path.extname(file.originalname); // get file extension
-        const name = file.fieldname + '-' + Date.now() + ext; // e.g. avatar-168123456.png
-        cb(null, name);
-    }
+  destination: function (req, file, cb) {
+    cb(null, uploadDir);
+  },
+  filename: function (req, file, cb) {
+    const uniqueName =
+      Date.now() + "-" + Math.round(Math.random() * 1e9);
+    cb(null, uniqueName + path.extname(file.originalname));
+  },
 });
 
-// Optional: Filter only image files
+// allow only images
 const fileFilter = (req, file, cb) => {
-    if (file.mimetype.startsWith("image/")) {
-        cb(null, true);
-    } else {
-        cb(new Error("Only image files are allowed!"), false);
-    }
+  if (file.mimetype.startsWith("image/")) {
+    cb(null, true);
+  } else {
+    cb(new Error("Only image files allowed"), false);
+  }
 };
 
-// MULTER UPLOAD MIDDLEWARE
 export const upload = multer({
-    storage: storage,
-    fileFilter: fileFilter,
-    limits: {
-        fileSize: 5 * 1024 * 1024, // limit 5MB per file
-    }
+  storage,
+  fileFilter,
+  limits: {
+    fileSize: 5 * 1024 * 1024, // 5MB
+  },
 });

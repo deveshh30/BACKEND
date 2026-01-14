@@ -5,13 +5,14 @@ import { upload } from "../middlewares/multer.middleware.js";
 const router = express.Router();
 
 // expect fields: avatar and coverImage
-router.post(
-  "/register",
-  upload.fields([
-    { name: "avatar", maxCount: 1 },
-    { name: "coverImage", maxCount: 1 },
-  ]),
-  registerUser
-);
+
+router.post("/register", (req, res, next) => {
+  console.log("REGISTER ROUTE HIT");
+  next();
+}, upload.fields([
+  { name: "avatar", maxCount: 1 },
+  { name: "coverImage", maxCount: 1 }
+]), registerUser);
+
 
 export default router;
