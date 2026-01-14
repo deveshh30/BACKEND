@@ -3,6 +3,10 @@ import fs from "fs";
 import path from "path";
 
 
+console.log("CLOUDINARY_CLOUD_NAME =", process.env.CLOUDINARY_CLOUD_NAME);
+console.log("CLOUDINARY_API_KEY =", process.env.CLOUDINARY_API_KEY);
+console.log("CLOUDINARY_API_SECRET =", process.env.CLOUDINARY_API_SECRET);
+
 if (
   !process.env.CLOUDINARY_CLOUD_NAME ||
   !process.env.CLOUDINARY_API_KEY ||
@@ -41,6 +45,7 @@ const uploadCloudinary = async (localFilePath) => {
   } catch (error) {
     console.error("Cloudinary upload failed:", error.message);
 
+    
     
     try {
       if (fs.existsSync(absolutePath)) {
