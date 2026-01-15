@@ -129,14 +129,30 @@ const loginUser = asyncHandler(async(req,res)=> {
     const loggedInUser = await User.findById(user._id).select("-password -refreshToken")
 
     const options = {
-        httpOnly : true,
+        httpOnly : true,    //http only make the cookie modify onnly in server bby default they can bbe modified from frontend
         secure : true
     }
 
+    return res.status(200).cookie("accessToken", accessToken, options)
+    .cookie("refreshToken", refreshToken, options)
+    .json(
+        new ApiResponse(
+            200, {
+                user : loggedInUser, accessToken, refreshToken
+            },
+            "user logged in successfully"
+        )
+    )
 });
+
+    const logoutUser = asyncHandler(async (req,res) => {
+        // clear the cookies of user
+        User.findById
+    })
 
 
 export {registerUser,
-    loginUser
+    loginUser,
+    logoutUser
 }
 
