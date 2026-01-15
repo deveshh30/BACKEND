@@ -266,12 +266,76 @@ import jwt from "jsonwebtoken";
         return res.status(200).json(new ApiResponse(200,user, "account details updated successfully"))
     });
 
+    const updateAvatar = asyncHandler(async (req,res) => {
+       const avatarLocalPath = req.file?.path
+
+       if (!avatarLocalPath) {
+        throw new ApiError(400, "avatar file is missing")
+       }
+
+       const avatar = await uploadCloudinary(avatarLocalPath)
+
+       if(!avatar.url) {
+        throw new ApiError(400, "error while uploading")
+       }
+
+       await User.findByIdAndUpdate(
+        req.user?._id,
+        {
+            $set : {
+                avatar : avatar.url
+            }
+        },
+        {new:true}
+       ).select("-password")
+
+       return res
+        .status(200)
+        .json(
+            new ApiResponse(200, user, "avatar uploaded successfully")
+        )
+    });
+
+    const updateCoverImage = asyncHandler(async (req,res) => {
+        const updateCoverImage = req.file?.path
+
+        if(!updateCoverImage) {
+            throw new ApiError(400, "cover image is missing")
+        }
+        
+        const coverImage = await uploadCloudinary(coverImageLocalPath)
+
+        if(!coverImage.url) {
+            throw new ApiError(400, "error while uploading the updated cover image")
+        }
+
+        await User.findByIdAndUpdate(
+            req.user?.Id,
+            {
+                $set : {
+                    coverImage : coverImage.url
+                }
+            },
+                {new: true}
+        ).select("-password")
+
+        return res
+        .status(200)
+        .json(
+            new ApiResponse(200, user, "coverImage uploaded successfully")
+        )
+    });
+
+
 
 export {registerUser,
     loginUser,
     logoutUser,
     refreshAccessToken,
     getCurrentUser,
-    changeCurrentPassword
+    changeCurrentPassword,
+    updateAccountDetails,
+    updateAvatar,
+    updateCoverImage
 }
 
