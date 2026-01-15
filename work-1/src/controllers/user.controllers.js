@@ -2,9 +2,10 @@ import { asyncHandler } from "../utils/asyncHandle.js";
 import { ApiError } from "../utils/ApiError.js";
 import { User } from "../models/user.models.js";
 import { uploadCloudinary } from "../utils/cloudinary.js";
-import { ApiResponse } from "../utils/ApiResponse.js";   
+import { ApiResponse } from "../utils/ApiResponse.js";  
+import jwt from "jsonwebtoken"; 
 
-const generateAccessAndRefreshTokens = async(userId) => {
+    const generateAccessAndRefreshTokens = async(userId) => {
     try {
         const user = await User.findById(userId)
 
@@ -18,9 +19,9 @@ const generateAccessAndRefreshTokens = async(userId) => {
     } catch (error) {
         throw new ApiError (500, "something went wrong while generating the tokens")
     }
-}
-;
-const registerUser = asyncHandler( async (req, res) => {
+    };
+
+    const registerUser = asyncHandler( async (req, res) => {
     // get user details from frontend
     // validation - not empty
     // check if user already exists: username, email
@@ -92,9 +93,9 @@ const registerUser = asyncHandler( async (req, res) => {
         new ApiResponse(200, createdUser, "User registered Successfully")
     )
 
-} );
+    } );
 
-const loginUser = asyncHandler(async(req,res)=> {
+    const loginUser = asyncHandler(async(req,res)=> {
 /* to do's for login user 
         take input from user (req body --> data)
         match the information with one in data base (username or email)
@@ -146,9 +147,9 @@ const loginUser = asyncHandler(async(req,res)=> {
             "user logged in successfully"
         )
     )
-});
+    });
 //if we donnt need res we can replace it by a unnderscore (_)
-const logoutUser = asyncHandler(async(req, res) => {
+    const logoutUser = asyncHandler(async(req, res) => {
     await User.findByIdAndUpdate(
         req.user._id,
         {
@@ -183,11 +184,11 @@ const logoutUser = asyncHandler(async(req, res) => {
 
     const refreshAccessToken = asyncHandler(async (req,res) => {
         const incomingRefreshToken = req.cookies.refreshToken || req.body.refreshToken
-    try {
+    
         if ( incomingRefreshToken) {
             throw new ApiError (401, "unauthorized request")
         }
-    
+    try {
         const decodedToken = jwt.verify(
             incomingRefreshToken,
             process.env.REFRESH_TOKEN_SECRET
@@ -221,11 +222,12 @@ const logoutUser = asyncHandler(async(req, res) => {
 } catch (error) {
     throw new ApiError(401, error?.message || "invalid refresh token")
 }
-})
+});
 
 
 export {registerUser,
     loginUser,
-    logoutUser
+    logoutUser,
+    refreshAccessToken
 }
 
