@@ -29,7 +29,6 @@ const uploadCloudinary = async (localFilePath) => {
       resource_type: "auto",
     });
 
-    console.log("Cloudinary upload success:", response.secure_url);
 
     
     try {

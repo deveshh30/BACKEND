@@ -4,6 +4,22 @@ import { User } from "../models/user.models.js";
 import { uploadCloudinary } from "../utils/cloudinary.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 
+const generateAccessAndRefreshTokens = async(userId) => {
+    try {
+        const user = await User.findById(userId)
+
+        const accessToken = generateAccessToken() 
+        const refreshToken = generateRefreshToken()
+        
+        user.refreshToken = refreshToken
+        await user.save({ validateBeforeSave : false })
+
+        return { accessToken, refreshToken }
+    } catch (error) {
+        throw new ApiError (500, "something went wrong while generating the tokens")
+    }
+}
+;
 const registerUser = asyncHandler( async (req, res) => {
     // get user details from frontend
     // validation - not empty
@@ -78,5 +94,49 @@ const registerUser = asyncHandler( async (req, res) => {
 
 } );
 
-export {registerUser}
+const loginUser = asyncHandler(async(req,res)=> {
+/* to do's for login user 
+        take input from user (req body --> data)
+        match the information with one in data base (username or email)
+        find the user (check password)
+        generate the refresh token and access token
+        if refresh token expires log out the user and tell him to re-authenticate
+        send cookies
+*/
+
+    const {email, userName, password} = req.body
+
+    if (!userName || !email) {
+        throw new ApiError(400, "username or email is required")
+    }
+
+    const user = await User.findOne({
+        $or : [ { userName } , { email } ]
+    })
+
+    if (!user) {
+        throw new ApiError(404, "user does not exist")
+    }
+
+    const isPasswordValid = await user.isPasswordCorrect(password)
+
+    if (!isPasswordValid) {
+        throw new ApiError(401, "invalid user credentials")
+    }
+
+    const { refreshToken , accessToken } = await generateAccessAndRefreshTokens(user._id)
+
+    const loggedInUser = await User.findById(user._id).select("-password -refreshToken")
+
+    const options = {
+        httpOnly : true,
+        secure : true
+    }
+
+});
+
+
+export {registerUser,
+    loginUser
+}
 
