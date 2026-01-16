@@ -3,23 +3,29 @@ import { ApiError } from "../utils/ApiError.js";
 import { User } from "../models/user.models.js";
 import { uploadCloudinary } from "../utils/cloudinary.js";
 import { ApiResponse } from "../utils/ApiResponse.js";  
-import jwt from "jsonwebtoken"; 
+import jwt from "jsonwebtoken";
+import mongoose from "mongoose";
 
-    const generateAccessAndRefreshTokens = async(userId) => {
-    try {
-        const user = await User.findById(userId)
+    const generateAccessAndRefreshTokens = async (userId) => {
+  try {
+    const user = await User.findById(userId)
 
-        const accessToken = user.generateAccessToken() 
-        const refreshToken = user.generateRefreshToken()
-        
-        user.refreshToken = refreshToken
-        await user.save({ validateBeforeSave : false })
-
-        return { accessToken, refreshToken }
-    } catch (error) {
-        throw new ApiError (500, "something went wrong while generating the tokens")
+    if (!user) {
+      throw new ApiError(404, "User not found")
     }
-    };
+
+    const accessToken = user.generateAccessToken()
+    const refreshToken = user.generateRefreshToken()
+
+    user.refreshToken = refreshToken
+    await user.save({ validateBeforeSave: false })
+
+    return { accessToken, refreshToken }
+  } catch (error) {
+    throw new ApiError(500, "Something went wrong while generating the token")
+  }
+}
+
 
     const registerUser = asyncHandler( async (req, res) => {
     // get user details from frontend
@@ -132,12 +138,12 @@ import jwt from "jsonwebtoken";
     const options = {
     //http only make the cookie modify onnly in server bby default they can bbe modified from frontend
           httpOnly: true,
-          sameSite: "lax",
-          secure: false,
-          path: "/"
+          secure: true
         }
 
-    return res.status(200).cookie("accessToken", accessToken, options)
+    return res
+    .status(200)
+    .cookie("accessToken", accessToken, options)
     .cookie("refreshToken", refreshToken, options)
     .json(
         new ApiResponse(
@@ -165,19 +171,14 @@ import jwt from "jsonwebtoken";
 
 
         const options = {
-           //http only make the cookie modify onnly in server bby default they can bbe modified from frontend
-        httpOnly: true,
-          sameSite: "lax",
-          secure: false,
-          path: "/"
-    }
-    return res.status(200)
-    .clearCookie(
-        "accessToken", options
-    )
-    .clearCookie(
-        "refreshToken", options
-    )
+  httpOnly: true,
+  secure: false,      // IMPORTANT for localhost
+  sameSite: "lax"
+}
+    return res
+    .status(200)
+    .clearCookie("accessToken", options)
+    .clearCookie("refreshToken", options)
     .json(new ApiResponse(200, {} ,"User logged out successfully"))
     })
 
@@ -188,6 +189,8 @@ import jwt from "jsonwebtoken";
         if ( !incomingRefreshToken) {
             throw new ApiError (401, "unauthorized request")
         }
+
+
     try {
         const decodedToken = jwt.verify(
             incomingRefreshToken,
@@ -205,13 +208,16 @@ import jwt from "jsonwebtoken";
         }
     
         const options = {
-            httpOnly : true,
-            secure : true
-        }
+  httpOnly: true,
+  secure: false,      // IMPORTANT for localhost
+  sameSite: "lax"
+}
     
-        const {accessToken,newRefreshToken} = await generateAccessAndRefreshTokens(user._id)
+        const { accessToken , newRefreshToken } = await generateAccessAndRefreshTokens(user._id)
     
-        return res.status(200).cookie("accessToken", accessToken,options)
+        return res
+        .status(200)
+        .cookie("accessToken", accessToken,options)
         .cookie("refreshToken", newRefreshToken,options)
         .json(
             new ApiResponse(

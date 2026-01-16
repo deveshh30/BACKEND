@@ -4,70 +4,56 @@ import mongooseAggregatePaginate from "mongoose-aggregate-paginate-v2";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
-const userSchema = new Schema(
-    {
-        userName : {
-            type : String,
-            required : true,
-            unique : true,
-            lowercase : true,
-            trim : true,
-            index : true,
-        },
-
-        email : {
-            type : String,
-            required: true,
-            unique : true,
-            lowercase : true,
-            trim : true,
-        },
-        fullName : {
-            type : String,
-            required : false,
-            unique : false,
-            trim : true,
-            index : true,
-
-        },
-        password:{
-            type : String,
-            required : true,
-            unique : true
-
-        },
-        avatar : {
-            type : String,
-            required : true,
-
-        },
-        coverImage : {
-            type : String,
-
-        },
-        watchHistory : {
-            type : Schema.Types.ObjectId,
-            ref : "video",
-        },
-        refreshToken : {
-            type : String,
-        }
+const userSchema = new mongoose.Schema(
+  {
+    userName: {
+      type: String,
+      required: true,
+      unique: true,
+      lowercase: true,
+      trim: true,
+      index: true,
     },
-    {
-        timestamps: true
-    }
-)
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+      lowercase: true,
+      trim: true,
+    },
+    fullName: {
+      type: String,
+      trim: true,
+    },
+    password: {
+      type: String,
+      required: true,
+    },
+    avatar: {
+      type: String,
+      required: true,
+    },
+    coverImage: {
+      type: String,
+    },
+    refreshToken: {
+      type: String,
+    },
+  },
+  { timestamps: true }
+);
+
 
 
 // we can not use arrow function here because it doesnt contain reference and here we need 
 // refrence from the user or video schema model we created just above this..
 
 
-userSchema.pre("Save", async function (next) {
-    if(!this.modified("password")) return next();
-    this.password = bcrypt.hash(this.password,8)
-    next()
-} )
+userSchema.pre("save", async function () {
+  if (!this.isModified("password")) return;
+  this.password = await bcrypt.hash(this.password, 8);
+});
+
 
 userSchema.methods.isPasswordCorrect = function (password) {
     return bcrypt.compare(password, this.password)
@@ -91,7 +77,7 @@ userSchema.methods.generateAccessToken = function () {
        ) }
 
 userSchema.methods.generateRefreshToken = async function () {
-            jwt.sign(
+            return jwt.sign(
                {
                 _id : this._id,
                 email: this.email,
