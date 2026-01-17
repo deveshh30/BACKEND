@@ -1,7 +1,11 @@
 import dotenv from 'dotenv';
 import express  from 'express';
+import { connnectDB } from './db/index.js';
 
-dotenv.config();
+
+
+
+dotenv.config({ path: "./.env" });
 
 const app = express();
 
@@ -13,7 +17,18 @@ app.get("/", (req,res)=> {
 
 const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, () => {
+const runServer = async () => {
+    try {
+        await connnectDB() //db is at another continent
+
+    app.listen(PORT, () => {
     console.log(`server is running on PORT --- ${PORT}`);
     
 })
+    } catch (error) {
+        console.log("failed to start the server", error);
+        
+    }
+}
+
+runServer();
