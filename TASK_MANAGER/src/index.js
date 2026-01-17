@@ -1,7 +1,7 @@
 import dotenv from 'dotenv';
 import express  from 'express';
 import { connnectDB } from './db/index.js';
-
+import app from './app.js';
 
 
 
