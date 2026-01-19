@@ -5,6 +5,12 @@ const registerUser = asyncHandler( async ( req , res ) => {
     
     try {
         const { email, fullName, password} = req.body;
+
+        const token = jwt.sign(
+            {id:user._id},
+            process.env.JWT_SECRET,
+            {expiresIn: "1h"}
+        );
     
         if(
             [fullName, email, password].some((field)=> field?.trim() === "")) {
@@ -51,7 +57,9 @@ const registerUser = asyncHandler( async ( req , res ) => {
     } catch (error) {
         return res.status(400)
                 .json({
-                    message : error.message
+                    message : error.message,
+                    user : createduser,
+                    token
                 }
     } 
 
