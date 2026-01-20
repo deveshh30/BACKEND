@@ -103,8 +103,7 @@ const loginUser = asyncHandler(async ( req , res ) => {
         .json({
             message : "user logged in successfully",
             token,
-            email,
-            user_id
+            email
         })
         
     } catch (error) {
