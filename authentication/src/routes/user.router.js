@@ -1,9 +1,9 @@
 import express from 'express';
 import { verifyJWT } from '../middlewares/auth.middleware.js';
 
-const router = express.Router();
+const userRouter = express.Router();
 
-router.get("/verify", verifyJWT, ( req , res ) => {
+userRouter.get("/verify", verifyJWT, ( req , res ) => {
     return res.status(200)
     .json({
         message : "profile fetched successfully",

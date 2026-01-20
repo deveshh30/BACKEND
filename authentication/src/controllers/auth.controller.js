@@ -1,7 +1,8 @@
-import { User } from "../models/user.models";
+import { User } from "../models/user.models.js";
 import jwt from "jsonwebtoken";
+import {asyncHandler} from "../utils/asyncHandler.js"
 
-const registerUser =  async ( req , res ) => {
+const registerUser =  asyncHandler (async ( req , res ) => {
     
     try {
         const { email, fullName, password} = req.body;
@@ -25,7 +26,7 @@ const registerUser =  async ( req , res ) => {
             return res.status(409)
                 .json({
                     message : "user with this email already existed in our database"
-                }
+                })
         }
 
         const user = await User.create({
@@ -56,12 +57,12 @@ const registerUser =  async ( req , res ) => {
                     message : error.message,
                     user : createduser,
                     token
-                }
+                })
     } 
 
-};
+});
 
-const loginUser = async ( req , res ) => {
+const loginUser = asyncHandler(async ( req , res ) => {
     try {
         const { email , password } = req.body;
 
@@ -103,7 +104,7 @@ const loginUser = async ( req , res ) => {
             message : "user logged in successfully",
             token,
             email,
-            user._id
+            user_id
         })
         
     } catch (error) {
@@ -112,7 +113,7 @@ const loginUser = async ( req , res ) => {
             message : error.message , 
         })
     }
-}
+});
 
 export {registerUser,
     loginUser

@@ -4,10 +4,12 @@ import userRouter from './routes/user.router.js';
 
 export const app = express();
 
-app.get()
+app.get("/", ( req , res ) => {
+    res.send("server is running");
+});
 
 app.use(express.json());
 
-app.use("/api/v1/auth", authRoutes);
+app.use("/api/v1/auth", authRouter);
 
-app.use("/api/v1/users", userRoutes);
+app.use("/api/v1/users", userRouter);

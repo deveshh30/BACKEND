@@ -1,10 +1,11 @@
 import express from 'express';
+import {asyncHandler} from "../utils/asyncHandler.js"
 import {registerUser, loginUser} from '../controllers/auth.controller.js';
 
-const router = express.Router();
+const authRouter = express.Router();
 
-router.post("/register", registerUser);
+authRouter.post("/register", asyncHandler(registerUser));
 
-router.post("/login", loginUser);
+authRouter.post("/login", asyncHandler(loginUser));
 
 export default authRouter;
