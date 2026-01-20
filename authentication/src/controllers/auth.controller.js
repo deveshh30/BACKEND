@@ -1,16 +1,12 @@
 import { User } from "../models/user.models";
 import jwt from "jsonwebtoken";
 
-const registerUser = asyncHandler( async ( req , res ) => {
+const registerUser =  async ( req , res ) => {
     
     try {
         const { email, fullName, password} = req.body;
 
-        const token = jwt.sign(
-            {id:user._id},
-            process.env.JWT_SECRET,
-            {expiresIn: "1h"}
-        );
+        
     
         if(
             [fullName, email, password].some((field)=> field?.trim() === "")) {
@@ -26,11 +22,11 @@ const registerUser = asyncHandler( async ( req , res ) => {
         })
     
         if(existedUser) {
-            return res.status(209)
+            return res.status(409)
                 .json({
                     message : "user with this email already existed in our database"
                 }
-        };
+        }
 
         const user = await User.create({
             fullName,
@@ -63,9 +59,61 @@ const registerUser = asyncHandler( async ( req , res ) => {
                 }
     } 
 
-});
+};
 
+const loginUser = async ( req , res ) => {
+    try {
+        const { email , password } = req.body;
 
+        if(!email || !password) {
+            return res.status(404)
+            .json({
+                message : "email is required to log-in"
+            })
+        }
 
-export {registerUser
+        const user = await User.findOne({email})
+        .select("+password");
+
+        if (!user) {
+            return res.status(404)
+            .json({
+                message : "user with this email does not exist"
+            })
+        }
+
+        const isPasswordValid = await user.isPasswordCorrect(password)
+
+        if(!isPasswordValid) {
+            return res.status(401)
+            .json({
+                message : " invalid user credentials "
+            })
+        }
+
+        const token = jwt.sign(
+            { id : user._id },
+            process.env.JWT_SECRET,
+            { expiresIn : process.env.JWT_EXPIRY, }
+        )
+
+        return res
+        .status(200)
+        .json({
+            message : "user logged in successfully",
+            token,
+            email,
+            user._id
+        })
+        
+    } catch (error) {
+        return res.status(404)
+        .json({
+            message : error.message , 
+        })
+    }
+}
+
+export {registerUser,
+    loginUser
 }
