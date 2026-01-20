@@ -76,7 +76,7 @@ const loginUser = async ( req , res ) => {
         .select("+password");
 
         if (!user) {
-            return res.status(404)
+            return res.status(400)
             .json({
                 message : "user with this email does not exist"
             })
